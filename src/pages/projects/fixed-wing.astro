@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Fixed-wing UAV | Advik Sharma" description="Telemetry lead and now project lead for the fixed-wing UAV at UW's Autonomous Flight Club.">
+  <a class="back" href="/#work">&larr; Work</a>
+  <h1>Fixed-wing UAV</h1>
+  <p class="meta">Autonomous Flight Club, UW &middot; C++, FreeRTOS, Teensy 4.1, MAVLink, QGroundControl &middot; <a href="https://github.com/Autonomous-Flight-Team/fixed-wing">repo</a></p>
+
+  <p>I joined in October 2025 and took the communications subsystem from start to finish: picking the radio hardware with the structures team, then building the software up to a full MAVLink link with QGroundControl. For 2026 to 2027 I lead the whole fixed-wing project.</p>
+
+  <p>The link is a pair of RFD900x radios at 900 MHz. One-way latency is 25 ms at 200 kbps, and we've field-tested it at 1 to 2 km.</p>
+  <p>Radio-controller inputs go through QGroundControl over the backlink and drive the roll, pitch and yaw servos, with telemetry coming back the other way. That was the minimum viable product I presented at the critical design review. At the preliminary design review I helped set the size and scope of the link, which is what gave us usable antenna requirements.</p>
+  <p>I also wrote a small telemetry logger: a FreeRTOS task writes sensor data in binary to a file, and a Python script decodes it on the host. It's a working skeleton, not yet an analysis tool.</p>
+  <p>As project lead I set milestones and priorities, run design reviews, write onboarding material for new members and coordinate with structures. Guidance and navigation work on the airframe starts later this year.</p>
+</Base>

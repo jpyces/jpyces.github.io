@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Lunar Listings | Advik Sharma" description="A Zillow-style listings site for the Moon, priced from NASA data. NASA Space Apps 2026.">
+  <a class="back" href="/#work">&larr; Work</a>
+  <h1>Lunar Listings</h1>
+  <p class="meta">NASA Space Apps 2026 &middot; Lunar Landing Site Navigator &middot; Python, NumPy, Numba, React, deck.gl</p>
+
+  <p>The pitch is a joke with a real answer underneath: the UN is selling the Moon, so what would the listings site look like? Each plot gets a price, which we call the Moonstimate, and that price is computed from where the Sun and Earth actually are, what the terrain does to the light, and how steep and cold the ground is.</p>
+
+  <p>
+    <a href="https://faletto.com/afc-spaceapps/">Open the site</a>&nbsp;&middot;&nbsp;<a href="https://github.com/faletto/afc-spaceapps">Source</a>
+  </p>
+
+  <figure>
+    <img src="/img/lunar-listings-map.jpg" width="1500" height="900" alt="The Lunar Listings map with price markers over a grey lunar surface and a list of plots on the right." />
+    <figcaption>The Moon-wide view. Prices on the map and in the list come out of the pipeline.</figcaption>
+  </figure>
+
+  <h2>What I did</h2>
+  <p>It was a team project of three. The build splits into a Python pipeline that turns raw NASA data into static files, and a React app that loads them. I owned the pipeline: the ephemeris, terrain, lighting and temperature calculations, the pricing model, and the checks against NASA data described below. One judgement call was setting the polar night temperature floor at 50 K after it disagreed with Diviner measurements.</p>
+  <p>On the app side I did a performance pass, lazy-loading the map so the first JavaScript download dropped from 989 kB to 201 kB, and cutting re-renders on hover. I also wrote the demo scenarios we presented from, the final slide deck and the pitch notes.</p>
+
+  <h2>How it works</h2>
+  <p>There are two tiers. The Moon-wide tier has 64,800 one-degree plots, with Sun and Earth visibility computed over 2028 from JPL Horizons. The South Pole District has 78,464 plots of 960 metres, built on 240 metre terrain cells, and there the terrain matters. Each cell gets a horizon profile every 2 degrees, so a crater rim can see the Sun for most of the year while the floor beside it never does.</p>
+
+  <figure>
+    <img src="/img/lunar-listings-tour.jpg" width="1500" height="900" alt="A listing at the lunar south pole with a panorama showing the terrain horizon, the Sun's path and Earth." />
+    <figcaption>The 3D Tour for a plot near Shackleton: terrain horizon, the Sun's track, and when Earth is in view.</figcaption>
+  </figure>
+
+  <h2>Checking it</h2>
+  <p>Against direct JPL Horizons queries at seven sites, the worst Sun or Earth elevation error was 0.0058 degrees. Against NASA's LOLA illumination maps, our Sun visibility correlates at r = 0.987 across the 78,464 polar plots, and 99% of plots land within 0.10 of LOLA.</p>
+  <p>The temperature check is weaker, and the site says so. Shadowed terrain agrees with LRO Diviner (40 K against about 43 K), but our sunlit maximums are well above Diviner's binned averages. Our model is simple and Diviner's maps average over season and sun angle. We label temperatures as modelled rather than pretend otherwise. The full report is in the repo under <code>docs/validation.md</code>.</p>
+
+  <p class="small">The premise is fictional and the prices are made up. The science behind them is real.</p>
+</Base>

@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Quadrotor flight software | Advik Sharma" description="A guidance, navigation and control stack for a 7-inch quadrotor, written from scratch in bare-metal C++.">
+  <a class="back" href="/#work">&larr; Work</a>
+  <h1>Quadrotor flight software</h1>
+  <p class="meta">Personal project, ongoing since summer 2026 &middot; C++, Teensy 4.1, MATLAB, Unity tests &middot; <a href="https://github.com/jpyces/Active-Flight-Control">repo</a></p>
+
+  <p>This is a complete guidance, navigation and control stack for a 7-inch quadrotor, with no flight-control libraries. I design each algorithm in MATLAB, port it to C++, and check it again with unit tests that run on a laptop. That catches most bugs before they get near hardware.</p>
+  <p>It hasn't flown yet. Estimation, control and the flight state machine are ported and tested, and all four sensors run on the bench. Still to do before a first hover: flight-core integration, closed-loop simulation, the ESC driver and logging.</p>
+
+  <figure>
+    <img src="/img/quadrotor-sensors.jpg" width="880" height="1100" alt="Breadboard with a Teensy 4.1, GNSS module, magnetometer, barometric altimeter and IMU." style="max-width:26rem;margin:0 auto" />
+    <figcaption>Sensor bring-up: Teensy 4.1, NEO-F10N GNSS, MLX90393 magnetometer, BMP280 altimeter, LSM6DSO IMU.</figcaption>
+  </figure>
+
+  <h2>Structure</h2>
+  <p>Flight logic never touches hardware. Drivers sit behind one interface, and everything downstream takes plain data in and returns plain data out. That's what lets 195 unit tests across 15 suites run without the vehicle, and nothing in the flight code allocates from the heap.</p>
+  <p>Data flows from the sensor drivers (IMU, magnetometer, barometer, GNSS) to the state estimator, then to the cascaded controller, then to the motor mixer. A flight state machine supervises all of it: boot checks, arming, takeoff, landing and failsafes.</p>
+  <p>There are two attitude filters. A complementary filter seeds Madgwick at boot and keeps running, so if Madgwick goes numerically unstable the estimator falls back to it and the state machine starts a level descent. Failsafes are recomputed every tick as the highest-priority condition currently tripped, which means escalation and recovery need no special cases.</p>
+  <p>I also check my tests against broken code. When I write a new suite I remove a condition or a latch on purpose and confirm that something fails.</p>
+
+  <figure>
+    <img src="/img/quadrotor-frame.jpg" width="1100" height="767" alt="The sensor breadboard beside an unassembled carbon-fibre quadrotor frame with four motors." />
+    <figcaption>The avionics next to the frame and motors they'll fly on.</figcaption>
+  </figure>
+
+  <h2>A bug that only existed on the board</h2>
+  <p>The sensor health checks passed every host-side test and then raised false alarms on real hardware. There were three causes stacked together.</p>
+  <p>First, the GNSS reports at 10 Hz and the loop runs much faster, so most ticks have no new message, and the health logic read that as the sensor going quiet. Second, a receiver still acquiring its first fix is working correctly, but I was counting it as failing. It now gets a one-time grace window, and "has a fix" is reported separately from "is healthy". Third, the receiver library could consume its own "new data" flag when I read it, so freshness was unreliable. I now take freshness from the message's GNSS time-of-week advancing, which reading can't consume.</p>
+  <p>Every driver now reports health and freshness separately, and the estimator only fuses a sample that is both.</p>
+</Base>

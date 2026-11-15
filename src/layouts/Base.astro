@@ -1,0 +1,29 @@
+---
+import '../styles/global.css';
+const { title, description = 'Advik Sharma, computer engineering student at the University of Washington.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+</head>
+<body>
+<div class="page">
+  <header class="site">
+    <a class="name" href="/">Advik Sharma</a>
+    <nav>
+      <a href="/#work">Work</a>
+      <a href="https://github.com/jpyces">GitHub</a>
+      <a href="https://www.linkedin.com/in/advik-sharma-263441278">LinkedIn</a>
+    </nav>
+  </header>
+  <main><slot /></main>
+  <footer>
+    <a href="mailto:adviks.work@outlook.com">adviks.work@outlook.com</a>
+  </footer>
+</div>
+</body>
+</html>

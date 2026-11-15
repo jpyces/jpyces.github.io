@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Snake on an FPGA | Advik Sharma" description="The classic game in SystemVerilog on a DE1-SoC with an NES controller and an LED matrix.">
+  <a class="back" href="/#work">&larr; Work</a>
+  <h1>Snake on an FPGA</h1>
+  <p class="meta">Course project, spring 2026 &middot; SystemVerilog, DE1-SoC, Quartus Prime, ModelSim &middot; <a href="https://github.com/jpyces/FPGA_Snake_Game">repo</a></p>
+
+  <p>The classic game in digital logic, played with an NES controller on a 16&times;16 LED matrix. The design is split into modules for the snake, apple, collision detection, game state, input and display, and each has its own testbench.</p>
+
+  <figure>
+    <img src="/img/fpga-snake.jpg" width="703" height="1100" alt="DE1-SoC board wired to an NES controller and a 16 by 16 LED matrix showing the snake and an apple." style="max-width:24rem;margin:0 auto" />
+    <figcaption>DE1-SoC, NES controller and LED matrix. The Teensy only regulates the controller's supply to 3.3 V.</figcaption>
+  </figure>
+
+  <p>I stored the snake as an array of coordinates, the way software would, to see what that costs in hardware. It costs a lot. The array has to be unrolled into logic, which capped the snake at 64 segments, and it was the most useful lesson of the project.</p>
+  <p>I wrote the NES controller driver and synchronised its inputs into the game clock domain, and I debugged cases where simulation and synthesised hardware disagreed. Block diagrams and per-module decisions are in the <a href="https://github.com/jpyces/FPGA_Snake_Game/blob/main/Assets/lab8_report.pdf">full report</a>.</p>
+</Base>
